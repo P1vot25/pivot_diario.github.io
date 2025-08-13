@@ -1,0 +1,24 @@
+name: Diario Crítico Automatizado
+on:
+  schedule:
+    - cron: "0 8 * * *"  # Corre a las 8 AM diariamente
+jobs:
+  run-diario:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 transformers torch
+      - name: Run script
+        run: python diario_automatizado.py
+      - name: Commit and push notes
+        run: |
+          git config --global user.name "Diario Bot"
+          git config --global user.email "bot@example.com"
+          git add docs/*
+          git commit -m "Nueva nota del diario $(date +%Y-%m-%d)"
+          git push
